@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  avatar    String?
+  username  String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resep {
+  id                   Int          @id @default(autoincrement())
+  name                 String
+  description          String
+  history              String
+  culture              String
+  ingredients          String
+  alternatifIngredient String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  deletedAt            DateTime?
+  resepImages          ResepImage[]
+}
+
+model ResepImage {
+  id        Int       @id @default(autoincrement())
+  image_url String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  resepId   Int
+  resep     Resep     @relation(fields: [resepId], references: [id])
+}
